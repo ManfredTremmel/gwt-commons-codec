@@ -20,7 +20,7 @@ The build packages are currently not on a indexed maven repository, but you can 
   </repositories>
 ```
 
-The Package itself has to be includes as binary and source package. I've done it this way, to give you the posibility to take the original apache commons binary package (full compatible) and combine it with the gwt-commons version of the source package fo the gwt compiler, this is usefull, if you do have the binary package already in the dependency list.
+The Package itself has to be includes as binary and source package. I've done it this way, to give you the possibility to take the original apache commons binary package (full compatible) and combine it with the gwt-commons version of the source package for the gwt compiler, this is useful, if you do have the binary package already in the dependency list.
 
 ```
     <dependency>
