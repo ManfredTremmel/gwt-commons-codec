@@ -210,7 +210,7 @@ limitations under the License.
     <commons.release.version>1.10</commons.release.version>
     <gwt.version>2.7.0</gwt.version>
     <guava-gwt.version>18.0</guava-gwt.version>
-    <wagonSSH.version>2.4</wagonSSH.version>
+    <wagonSSH.version>2.9</wagonSSH.version>
     <!-- The RC version used in the staging repository URL. -->
     <commons.rc.version>RC1</commons.rc.version>
     <commons.jira.id>CODEC</commons.jira.id>
