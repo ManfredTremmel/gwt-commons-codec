@@ -328,7 +328,7 @@ limitations under the License.
           <style>OBFUSCATED</style>
           <failOnError>true</failOnError>
           <localWorkers>-1</localWorkers>
-          <extraJvmArgs>-Xms512m -Xmx1g -XX:MaxPermSize=256m</extraJvmArgs>
+          <extraJvmArgs>-Xms512m -Xmx1g</extraJvmArgs>
         </configuration>
       </plugin>
     </plugins>
