@@ -25,7 +25,7 @@ limitations under the License.
   <groupId>gwt-commons-codec</groupId>
   <artifactId>gwt-commons-codec</artifactId>
   <!-- Remember to update the version in default.properties as well -->
-  <version>1.10-SNAPSHOT</version>
+  <version>1.10-gwt27-0</version>
   <name>Apache Commons Codec</name>
   <inceptionYear>2002</inceptionYear>
   <description>
