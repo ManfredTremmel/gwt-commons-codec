@@ -7,12 +7,12 @@ The Package itself has to be includes as binary and source package. I've done it
 
 ```
     <dependency>
-      <groupId>gwt-commons-codec</groupId>
+      <groupId>de.knightsoft-net</groupId>
       <artifactId>gwt-commons-codec</artifactId>
       <version>1.10-1</version>
     </dependency>
     <dependency>
-      <groupId>gwt-commons-codec</groupId>
+      <groupId>de.knightsoft-net</groupId>
       <artifactId>gwt-commons-codec</artifactId>
       <version>1.10-1</version>
       <classifier>sources</classifier>
