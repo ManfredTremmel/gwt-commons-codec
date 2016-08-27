@@ -25,7 +25,7 @@ limitations under the License.
   <groupId>de.knightsoft-net</groupId>
   <artifactId>gwt-commons-codec</artifactId>
   <!-- Remember to update the version in default.properties as well -->
-  <version>1.10-2</version>
+  <version>1.10-3</version>
   <name>Apache Commons Codec</name>
   <inceptionYear>2002</inceptionYear>
   <description>
@@ -243,12 +243,11 @@ limitations under the License.
     <commons.componentid>codec</commons.componentid>
     <commons.release.version>1.10</commons.release.version>
     <gwt.version>2.7.0</gwt.version>
-    <guava-gwt.version>19.0</guava-gwt.version>
     <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
     <wagon-webdav-jackrabbit.version>2.10</wagon-webdav-jackrabbit.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-source-plugin.version>3.0.0</maven-source-plugin.version>
-    <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
+    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <!-- The RC version used in the staging repository URL. -->
     <commons.rc.version>RC1</commons.rc.version>
@@ -274,12 +273,6 @@ limitations under the License.
       <artifactId>gwt-user</artifactId>
       <version>${gwt.version}</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava-gwt</artifactId>
-      <version>${guava-gwt.version}</version>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>

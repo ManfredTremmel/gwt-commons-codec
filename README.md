@@ -9,7 +9,7 @@ The Package itself has to be includes as binary and source package. I've done it
     <dependency>
       <groupId>de.knightsoft-net</groupId>
       <artifactId>gwt-commons-codec</artifactId>
-      <version>1.10-2</version>
+      <version>1.10-3</version>
     </dependency>
 ```
 
