@@ -246,7 +246,7 @@ limitations under the License.
     <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
     <wagon-webdav-jackrabbit.version>2.10</wagon-webdav-jackrabbit.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-    <maven-source-plugin.version>3.0.0</maven-source-plugin.version>
+    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
     <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <!-- The RC version used in the staging repository URL. -->
