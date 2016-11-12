@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The Guava Authors
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -16,11 +16,9 @@ package java.nio.charset;
 
 /**
  * GWT emulation of {@link UnsupportedCharsetException}.
- *
- * @author Gregory Kick
  */
 public class UnsupportedCharsetException extends IllegalArgumentException {
-  private static final long serialVersionUID = -6053539673593901143L;
+  private static final long serialVersionUID = 1490765524727386367L;
   private final String charsetName;
 
   public UnsupportedCharsetException(final String charsetName) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The Guava Authors
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -16,11 +16,9 @@ package java.nio.charset;
 
 /**
  * GWT emulation of {@link IllegalCharsetNameException}.
- *
- * @author Gregory Kick
  */
 public class IllegalCharsetNameException extends IllegalArgumentException {
-  private static final long serialVersionUID = 1104905842998489844L;
+  private static final long serialVersionUID = 1457525358470002989L;
   private final String charsetName;
 
   public IllegalCharsetNameException(final String charsetName) {
