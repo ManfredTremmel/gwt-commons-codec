@@ -66,12 +66,15 @@ import org.apache.commons.codec.StringEncoder;
  * splitting on pipe (<code>|</code>) and indexing under each of these alternatives.
  * <p>
  * <b>Note</b>: this version of the Beider-Morse encoding is equivalent with v3.4 of the reference implementation.
- *
+ * </p>
  * @see <a href="http://stevemorse.org/phonetics/bmpm.htm">Beider-Morse Phonetic Matching</a>
  * @see <a href="http://stevemorse.org/phoneticinfo.htm">Reference implementation</a>
  *
+ * <p>
+ * This class is Not ThreadSafe
+ * </p>
  * @since 1.6
- * @version $Id: BeiderMorseEncoder.java 1636703 2014-11-04 19:49:40Z tn $
+ * @version $Id: BeiderMorseEncoder.java 1744724 2016-05-20 12:24:04Z sebb $
  */
 public class BeiderMorseEncoder implements StringEncoder {
     // Implementation note: This class is a spring-friendly facade to PhoneticEngine. It allows read/write configuration

@@ -38,7 +38,7 @@ public class MatchRatingApproachEncoder implements StringEncoder {
     /**
      * Constants used mainly for the min rating value.
      */
-    private static final int ONE = 1, TWO = 2, THREE = 3, FOUR = 4, FIVE = 5, SIX = 6, SEVEN = 7, EIGHT = 8,
+    private static final int ONE = 1, TWO = 2, THREE = 3, FOUR = 4, FIVE = 5, SIX = 6, SEVEN = 7,
                              ELEVEN = 11, TWELVE = 12;
 
     /**
@@ -163,9 +163,8 @@ public class MatchRatingApproachEncoder implements StringEncoder {
             final String firstThree = name.substring(0, THREE);
             final String lastThree = name.substring(nameLength - THREE, nameLength);
             return firstThree + lastThree;
-        } else {
-            return name;
         }
+        return name;
     }
 
     /**
@@ -186,9 +185,9 @@ public class MatchRatingApproachEncoder implements StringEncoder {
 
         if (sumLength <= FOUR) {
             minRating = FIVE;
-        } else if (sumLength >= FIVE && sumLength <= SEVEN) {
+        } else if (sumLength <= SEVEN) { // aready know it is at least 5
             minRating = FOUR;
-        } else if (sumLength >= EIGHT && sumLength <= ELEVEN) {
+        } else if (sumLength <= ELEVEN) { // aready know it is at least 8
             minRating = THREE;
         } else if (sumLength == TWELVE) {
             minRating = TWO;
@@ -289,7 +288,7 @@ public class MatchRatingApproachEncoder implements StringEncoder {
      *
      * @param name1
      *            name2
-     * @return
+     * @return the length as above
      */
     int leftToRightThenRightToLeftProcessing(final String name1, final String name2) {
         final char[] name1Char = name1.toCharArray();
@@ -335,9 +334,8 @@ public class MatchRatingApproachEncoder implements StringEncoder {
         // Final bit - subtract longest string from 6 and return this int value
         if (strA.length() > strB.length()) {
             return Math.abs(SIX - strA.length());
-        } else {
-            return Math.abs(SIX - strB.length());
         }
+        return Math.abs(SIX - strB.length());
     }
 
     /**
@@ -382,7 +380,7 @@ public class MatchRatingApproachEncoder implements StringEncoder {
      * @return Single consonant word
      */
     String removeDoubleConsonants(final String name) {
-        String replacedName = name.toUpperCase();
+        String replacedName = name.toUpperCase(Locale.ENGLISH);
         for (final String dc : DOUBLE_CONSONANT) {
             if (replacedName.contains(dc)) {
                 final String singleLetter = dc.substring(0, 1);
@@ -419,8 +417,7 @@ public class MatchRatingApproachEncoder implements StringEncoder {
         // return isVowel(firstLetter) ? (firstLetter + name) : name;
         if (isVowel(firstLetter)) {
             return firstLetter + name;
-        } else {
-            return name;
         }
+        return name;
     }
 }

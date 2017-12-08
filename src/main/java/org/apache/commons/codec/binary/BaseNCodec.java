@@ -33,7 +33,7 @@ import com.google.gwt.core.shared.GwtIncompatible;
  * This class is thread-safe.
  * </p>
  *
- * @version $Id: BaseNCodec.java 1634404 2014-10-26 23:06:10Z ggregory $
+ * @version $Id: BaseNCodec.java 1811344 2017-10-06 15:19:57Z ggregory $
  */
 public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
 
@@ -359,6 +359,8 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
      *
      * @param pArray a byte array containing binary data
      * @return String containing only character data in the appropriate alphabet.
+     * @since 1.5
+     * This is a duplicate of {@link #encodeToString(byte[])}; it was merged during refactoring.
     */
     public String encodeAsString(final byte[] pArray){
         return StringUtils.newStringUtf8(encode(pArray));
@@ -422,16 +424,36 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
      *
      * @param pArray
      *            a byte array containing binary data
-     * @return A byte array containing only the basen alphabetic character data
+     * @return A byte array containing only the base N alphabetic character data
      */
     @Override
     public byte[] encode(final byte[] pArray) {
         if (pArray == null || pArray.length == 0) {
             return pArray;
         }
+        return encode(pArray, 0, pArray.length);
+    }
+
+    /**
+     * Encodes a byte[] containing binary data, into a byte[] containing
+     * characters in the alphabet.
+     *
+     * @param pArray
+     *            a byte array containing binary data
+     * @param offset
+     *            initial offset of the subarray.
+     * @param length
+     *            length of the subarray.
+     * @return A byte array containing only the base N alphabetic character data
+     * @since 1.11
+     */
+    public byte[] encode(final byte[] pArray, final int offset, final int length) {
+        if (pArray == null || pArray.length == 0) {
+            return pArray;
+        }
         final Context context = new Context();
-        encode(pArray, 0, pArray.length, context);
-        encode(pArray, 0, EOF, context); // Notify encoder of EOF.
+        encode(pArray, offset, length, context);
+        encode(pArray, offset, EOF, context); // Notify encoder of EOF.
         final byte[] buf = new byte[context.pos - context.readPos];
         readResults(buf, 0, buf.length, context);
         return buf;
@@ -464,9 +486,9 @@ public abstract class BaseNCodec implements BinaryEncoder, BinaryDecoder {
      *         <code>false</code>, otherwise
      */
     public boolean isInAlphabet(final byte[] arrayOctet, final boolean allowWSPad) {
-        for (int i = 0; i < arrayOctet.length; i++) {
-            if (!isInAlphabet(arrayOctet[i]) &&
-                    (!allowWSPad || (arrayOctet[i] != pad) && !isWhiteSpace(arrayOctet[i]))) {
+        for (final byte octet : arrayOctet) {
+            if (!isInAlphabet(octet) &&
+                    (!allowWSPad || (octet != pad) && !isWhiteSpace(octet))) {
                 return false;
             }
         }

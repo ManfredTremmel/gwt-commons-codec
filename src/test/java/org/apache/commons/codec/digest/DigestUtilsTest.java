@@ -19,36 +19,61 @@ package org.apache.commons.codec.digest;
 
 import static org.apache.commons.codec.binary.StringUtils.getBytesUtf8;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.util.Random;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.After;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests DigestUtils methods.
  *
- * @version $Id: DigestUtilsTest.java 1414924 2012-11-28 21:13:20Z ggregory $
+ * @version $Id: DigestUtilsTest.java 1811343 2017-10-06 15:19:35Z ggregory $
  */
 public class DigestUtilsTest {
 
-    private final byte[] testData = new byte[1024*1024];
+    private final byte[] testData = new byte[1024 * 1024];
 
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        new Random().nextBytes(testData);
+    private File testFile;
+
+    private void assumeJava8() {
+        Assume.assumeTrue(SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_8));
     }
 
-    @Test
-    public void testConstructable() {
-        assertNotNull(new DigestUtils());
+    byte[] getTestData() {
+        return testData;
+    }
+
+    File getTestFile() {
+        return testFile;
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        new Random().nextBytes(testData);
+        testFile = File.createTempFile(DigestUtilsTest.class.getName(), ".dat");
+        final FileOutputStream fos = new FileOutputStream(testFile);
+        fos.write(testData);
+        fos.close();
+    }
+
+    @After
+    public void tearDown() {
+        if (!testFile.delete()) {
+            testFile.deleteOnExit();
+        }
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -79,7 +104,7 @@ public class DigestUtilsTest {
 
         assertEquals(DigestUtils.md2Hex(testData),
                 DigestUtils.md2Hex(new ByteArrayInputStream(testData)));
-    }
+}
 
     /**
      * An MD2 hash converted to hex should always be 32 characters.
@@ -132,13 +157,13 @@ public class DigestUtilsTest {
 
         assertEquals(DigestUtils.md5Hex(testData),
                 DigestUtils.md5Hex(new ByteArrayInputStream(testData)));
-    }
+}
 
     /**
      * An MD5 hash converted to hex should always be 32 characters.
      */
     @Test
-    public void testMd5HexLength() {
+    public void testMd5HexLengthForBytes() {
         String hashMe = "this is some string that is longer than 32 characters";
         String hash = DigestUtils.md5Hex(getBytesUtf8(hashMe));
         assertEquals(32, hash.length());
@@ -152,7 +177,7 @@ public class DigestUtilsTest {
      * An MD5 hash should always be a 16 element byte[].
      */
     @Test
-    public void testMd5Length() {
+    public void testMd5LengthForBytes() {
         String hashMe = "this is some string that is longer than 16 characters";
         byte[] hash = DigestUtils.md5(getBytesUtf8(hashMe));
         assertEquals(16, hash.length);
@@ -195,6 +220,24 @@ public class DigestUtilsTest {
     }
 
     @Test
+    public void testSha1UpdateWithByteBuffer(){
+        final String d1 = "C'est un homme qui rentre dans un café, et plouf";
+        final String d2 = "C'est un homme, c'est qu'une tête, on lui offre un cadeau: 'oh... encore un chapeau!'";
+
+        MessageDigest messageDigest = DigestUtils.getSha1Digest();
+        messageDigest.update(d1.getBytes());
+        messageDigest.update(d2.getBytes());
+        final String expectedResult = Hex.encodeHexString(messageDigest.digest());
+
+        messageDigest = DigestUtils.getSha1Digest();
+        DigestUtils.updateDigest(messageDigest, ByteBuffer.wrap(d1.getBytes()));
+        DigestUtils.updateDigest(messageDigest, ByteBuffer.wrap(d2.getBytes()));
+        final String actualResult = Hex.encodeHexString(messageDigest.digest());
+
+        assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
     public void testSha1UpdateWithString(){
         final String d1 = "C'est un homme qui rentre dans un café, et plouf";
         final String d2 = "C'est un homme, c'est qu'une tête, on lui offre un cadeau: 'oh... encore un chapeau!'";
@@ -210,6 +253,17 @@ public class DigestUtilsTest {
         final String actualResult = Hex.encodeHexString(messageDigest.digest());
 
         assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    public void testSha224() throws IOException {
+        assumeJava8();
+        assertEquals("d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f",
+                new DigestUtils(MessageDigestAlgorithms.SHA_224).digestAsHex(("")));
+        assertEquals("730e109bd7a8a32b1cb9d9a09aa2325d2430587ddbc0c38bad911525",
+                new DigestUtils(MessageDigestAlgorithms.SHA_224).digestAsHex("The quick brown fox jumps over the lazy dog"));
+
+        // Examples from FIPS 180-4?
     }
 
     @Test
@@ -256,9 +310,13 @@ public class DigestUtilsTest {
              "501d289e4900f7e4331b99dec4b5433ac7d329eeb6dd26545e96e55b874be909",
              DigestUtils.sha512Hex("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmn" +
                        "hijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu"));
-    assertEquals(DigestUtils.sha512Hex(testData),
-            DigestUtils.sha512Hex(new ByteArrayInputStream(testData)));
-}
+    }
+
+    @Test
+    public void testSha512HexInputStream() throws IOException {
+        assertEquals(DigestUtils.sha512Hex(testData),
+                DigestUtils.sha512Hex(new ByteArrayInputStream(testData)));
+    }
 
     @SuppressWarnings("deprecation") // deliberate tests of deprecated code
     @Test

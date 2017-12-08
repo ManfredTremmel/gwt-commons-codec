@@ -29,7 +29,7 @@ import org.junit.Test;
  *
  * <p>Keep this file in UTF-8 encoding for proper Javadoc processing.</p>
  *
- * @version $Id: SoundexTest.java 1571906 2014-02-26 04:09:25Z ggregory $
+ * @version $Id: SoundexTest.java 1811343 2017-10-06 15:19:35Z ggregory $
  */
 public class SoundexTest extends StringEncoderAbstractTest<Soundex> {
 
@@ -227,6 +227,9 @@ public class SoundexTest extends StringEncoderAbstractTest<Soundex> {
         // Ashcraft is coded A-261 (A, 2 for the S, C ignored, 6 for the R, 1
         // for the F). It is not coded A-226.
         Assert.assertEquals("A261", this.getStringEncoder().encode("Ashcraft"));
+        Assert.assertEquals("A261", this.getStringEncoder().encode("Ashcroft"));
+        Assert.assertEquals("Y330", this.getStringEncoder().encode("yehudit"));
+        Assert.assertEquals("Y330", this.getStringEncoder().encode("yhwdyt"));
     }
 
     /**
@@ -349,7 +352,7 @@ public class SoundexTest extends StringEncoderAbstractTest<Soundex> {
     /**
      * Fancy characters are not mapped by the default US mapping.
      *
-     * http://issues.apache.org/bugzilla/show_bug.cgi?id=29080
+     * https://issues.apache.org/jira/browse/CODEC-30
      */
     @Test
     public void testUsMappingEWithAcute() {
@@ -370,7 +373,7 @@ public class SoundexTest extends StringEncoderAbstractTest<Soundex> {
     /**
      * Fancy characters are not mapped by the default US mapping.
      *
-     * http://issues.apache.org/bugzilla/show_bug.cgi?id=29080
+     * https://issues.apache.org/jira/browse/CODEC-30
      */
     @Test
     public void testUsMappingOWithDiaeresis() {
@@ -386,5 +389,47 @@ public class SoundexTest extends StringEncoderAbstractTest<Soundex> {
         } else {
             Assert.assertEquals("", this.getStringEncoder().encode("\u00f6"));
         }
+    }
+
+    /**
+     * Tests example from http://en.wikipedia.org/wiki/Soundex#American_Soundex as of 2015-03-22.
+     */
+    @Test
+    public void testWikipediaAmericanSoundex() {
+        Assert.assertEquals("R163", this.getStringEncoder().encode("Robert"));
+        Assert.assertEquals("R163", this.getStringEncoder().encode("Rupert"));
+        Assert.assertEquals("A261", this.getStringEncoder().encode("Ashcraft"));
+        Assert.assertEquals("A261", this.getStringEncoder().encode("Ashcroft"));
+        Assert.assertEquals("T522", this.getStringEncoder().encode("Tymczak"));
+        Assert.assertEquals("P236", this.getStringEncoder().encode("Pfister"));
+    }
+
+    @Test
+// examples and algorithm rules from:  http://www.genealogy.com/articles/research/00000060.html
+    public void testGenealogy() { // treat vowels and HW as silent
+        final Soundex s = Soundex.US_ENGLISH_GENEALOGY;
+        Assert.assertEquals("H251", s.encode("Heggenburger"));
+        Assert.assertEquals("B425", s.encode("Blackman"));
+        Assert.assertEquals("S530", s.encode("Schmidt"));
+        Assert.assertEquals("L150", s.encode("Lippmann"));
+        // Additional local example
+        Assert.assertEquals("D200", s.encode("Dodds")); // 'o' is not a separator here - it is silent
+        Assert.assertEquals("D200", s.encode("Dhdds")); // 'h' is silent
+        Assert.assertEquals("D200", s.encode("Dwdds")); // 'w' is silent
+    }
+
+    @Test
+// examples and algorithm rules from:  http://west-penwith.org.uk/misc/soundex.htm
+    public void testSimplifiedSoundex() { // treat vowels and HW as separators
+        final Soundex s = Soundex.US_ENGLISH_SIMPLIFIED;
+        Assert.assertEquals("W452", s.encode("WILLIAMS"));
+        Assert.assertEquals("B625", s.encode("BARAGWANATH"));
+        Assert.assertEquals("D540", s.encode("DONNELL"));
+        Assert.assertEquals("L300", s.encode("LLOYD"));
+        Assert.assertEquals("W422", s.encode("WOOLCOCK"));
+        // Additional local examples
+        Assert.assertEquals("D320", s.encode("Dodds"));
+        Assert.assertEquals("D320", s.encode("Dwdds")); // w is a separator
+        Assert.assertEquals("D320", s.encode("Dhdds")); // h is a separator
     }
 }

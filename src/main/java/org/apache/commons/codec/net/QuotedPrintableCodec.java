@@ -64,7 +64,7 @@ import com.google.gwt.core.shared.GwtIncompatible;
  *          Mechanisms for Specifying and Describing the Format of Internet Message Bodies </a>
  *
  * @since 1.3
- * @version $Id: QuotedPrintableCodec.java 1637069 2014-11-06 10:38:51Z tn $
+ * @version $Id: QuotedPrintableCodec.java 1788792 2017-03-26 23:57:00Z sebb $
  */
 public class QuotedPrintableCodec implements BinaryEncoder, BinaryDecoder, StringEncoder, StringDecoder {
     /**
@@ -185,8 +185,8 @@ public class QuotedPrintableCodec implements BinaryEncoder, BinaryDecoder, Strin
     @GwtIncompatible("incompatible method")
     private static final int encodeQuotedPrintable(final int b, final ByteArrayOutputStream buffer) {
         buffer.write(ESCAPE_CHAR);
-        final char hex1 = Character.toUpperCase(Character.forDigit((b >> 4) & 0xF, 16));
-        final char hex2 = Character.toUpperCase(Character.forDigit(b & 0xF, 16));
+        final char hex1 = Utils.hexDigit(b >> 4);
+        final char hex2 = Utils.hexDigit(b);
         buffer.write(hex1);
         buffer.write(hex2);
         return 3;
@@ -246,10 +246,9 @@ public class QuotedPrintableCodec implements BinaryEncoder, BinaryDecoder, Strin
                                   final ByteArrayOutputStream buffer) {
         if (encode) {
             return encodeQuotedPrintable(b, buffer);
-        } else {
-            buffer.write(b);
-            return 1;
         }
+        buffer.write(b);
+        return 1;
     }
 
     /**
@@ -298,7 +297,7 @@ public class QuotedPrintableCodec implements BinaryEncoder, BinaryDecoder, Strin
      *            array of bytes to be encoded
      * @return array of bytes containing quoted-printable data
      */
-    public static final byte[] encodeQuotedPrintable(BitSet printable, final byte[] bytes) {
+    public static final byte[] encodeQuotedPrintable(final BitSet printable, final byte[] bytes) {
         return encodeQuotedPrintable(printable, bytes, false);
     }
 
@@ -318,7 +317,7 @@ public class QuotedPrintableCodec implements BinaryEncoder, BinaryDecoder, Strin
      * @return array of bytes containing quoted-printable data
      * @since 1.10
      */
-    public static final byte[] encodeQuotedPrintable(BitSet printable, final byte[] bytes, boolean strict) {
+    public static final byte[] encodeQuotedPrintable(BitSet printable, final byte[] bytes, final boolean strict) {
         if (bytes == null) {
             return null;
         }
@@ -333,7 +332,7 @@ public class QuotedPrintableCodec implements BinaryEncoder, BinaryDecoder, Strin
             // encode up to buffer.length - 3, the last three octets will be treated
             // separately for simplification of note #3
             for (int i = 0; i < bytes.length - 3; i++) {
-                int b = getUnsignedOctet(i, bytes);
+                final int b = getUnsignedOctet(i, bytes);
                 if (pos < SAFE_LENGTH) {
                     // up to this length it is safe to add any byte, encoded or not
                     final int addedBytes = encodeByte(b, !printable.get(b), buffer, bufPos);

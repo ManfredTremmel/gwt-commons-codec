@@ -22,20 +22,27 @@ package org.apache.commons.codec.digest;
  * Documentation</cite>.
  *
  * <p>
- * <strong>Note: Not all JCE implementations supports all algorithms in this enum.</strong>
+ * <strong>Note: Not all JCE implementations support all the algorithms in this enum.</strong>
  * </p>
  *
- * @see <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html">Java Cryptography
- *      Architecture Standard Algorithm Name Documentation</a>
+ * @see <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html#SunJCEProvider"> Java
+ *      6 Cryptography Architecture Sun Providers Documentation</a>
+ * @see <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/SunProviders.html#SunJCEProvider"> Java
+ *      7 Cryptography Architecture Sun Providers Documentation</a>
+ * @see <a href="http://docs.oracle.com/javase/8/docs/technotes/guides/security/SunProviders.html#SunJCEProvider"> Java
+ *      8 Cryptography Architecture Sun Providers Documentation</a>
+ * @see <a href=
+ *      "http://docs.oracle.com/javase/9/security/oracleproviders.htm#JSSEC-GUID-A47B1249-593C-4C38-A0D0-68FA7681E0A7">
+ *      Java 9 Cryptography Architecture Sun Providers Documentation</a>
  * @since 1.10
- * @version $Id: HmacAlgorithms.java 1634405 2014-10-26 23:07:26Z ggregory $
+ * @version $Id: HmacAlgorithms.java 1811624 2017-10-09 23:07:49Z ggregory $
  */
 public enum HmacAlgorithms {
 
     /**
      * The HmacMD5 Message Authentication Code (MAC) algorithm specified in RFC 2104 and RFC 1321.
      * <p>
-     * Every implementation of the Java platform is required to support this standard Mac algorithm.
+     * Every implementation of the Java platform is required to support this standard MAC algorithm.
      * </p>
      */
     HMAC_MD5("HmacMD5"),
@@ -43,15 +50,24 @@ public enum HmacAlgorithms {
     /**
      * The HmacSHA1 Message Authentication Code (MAC) algorithm specified in RFC 2104 and FIPS PUB 180-2.
      * <p>
-     * Every implementation of the Java platform is required to support this standard Mac algorithm.
+     * Every implementation of the Java platform is required to support this standard MAC algorithm.
      * </p>
      */
     HMAC_SHA_1("HmacSHA1"),
 
     /**
+     * The HmacSHA224 Message Authentication Code (MAC) algorithm specified in RFC 2104 and FIPS PUB 180-2.
+     * <p>
+     * Every implementation of the Java 8+ platform is required to support this standard MAC algorithm.
+     * </p>
+     * @since 1.11
+     */
+    HMAC_SHA_224("HmacSHA224"),
+
+    /**
      * The HmacSHA256 Message Authentication Code (MAC) algorithm specified in RFC 2104 and FIPS PUB 180-2.
      * <p>
-     * Every implementation of the Java platform is required to support this standard Mac algorithm.
+     * Every implementation of the Java platform is required to support this standard MAC algorithm.
      * </p>
      */
     HMAC_SHA_256("HmacSHA256"),
@@ -59,7 +75,7 @@ public enum HmacAlgorithms {
     /**
      * The HmacSHA384 Message Authentication Code (MAC) algorithm specified in RFC 2104 and FIPS PUB 180-2.
      * <p>
-     * Every implementation of the Java platform is <em>not</em> required to support this Mac algorithm.
+     * This MAC algorithm is <em>optional</em>; not all implementations support it.
      * </p>
      */
     HMAC_SHA_384("HmacSHA384"),
@@ -67,28 +83,44 @@ public enum HmacAlgorithms {
     /**
      * The HmacSHA512 Message Authentication Code (MAC) algorithm specified in RFC 2104 and FIPS PUB 180-2.
      * <p>
-     * Every implementation of the Java platform is <em>not</em> required to support this Mac algorithm.
+     * This MAC algorithm is <em>optional</em>; not all implementations support it.
      * </p>
      */
     HMAC_SHA_512("HmacSHA512");
 
-    private final String algorithm;
+    private final String name;
 
     private HmacAlgorithms(final String algorithm) {
-        this.algorithm = algorithm;
+        this.name = algorithm;
+    }
+
+    /**
+     * Gets the algorithm name.
+     *
+     * @return the algorithm name.
+     * @since 1.11
+     */
+    public String getName() {
+        return name;
     }
 
     /**
      * The algorithm name
      *
-     * @see <a
-     *      href="http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html#SunJCEProvider">Java
-     *      Cryptography Architecture Sun Providers Documentation</a>
+     * @see <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html#SunJCEProvider">
+     *      Java 6 Cryptography Architecture Sun Providers Documentation</a>
+     * @see <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/SunProviders.html#SunJCEProvider">
+     *      Java 7 Cryptography Architecture Sun Providers Documentation</a>
+     * @see <a href="http://docs.oracle.com/javase/8/docs/technotes/guides/security/SunProviders.html#SunJCEProvider">
+     *      Java 8 Cryptography Architecture Sun Providers Documentation</a>
+     * @see <a href=
+     *      "http://docs.oracle.com/javase/9/security/oracleproviders.htm#JSSEC-GUID-A47B1249-593C-4C38-A0D0-68FA7681E0A7">
+     *      Java 9 Cryptography Architecture Sun Providers Documentation</a>
      * @return The algorithm name ("HmacSHA512" for example)
      */
     @Override
     public String toString() {
-        return algorithm;
+        return name;
     }
 
 }

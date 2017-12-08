@@ -39,7 +39,7 @@ package org.apache.commons.codec.binary;
  * @see <a href="http://www.ietf.org/rfc/rfc4648.txt">RFC 4648</a>
  *
  * @since 1.5
- * @version $Id: Base32.java 1619949 2014-08-22 22:56:08Z ggregory $
+ * @version $Id: Base32.java 1809441 2017-09-23 16:41:53Z ggregory $
  */
 public class Base32 extends BaseNCodec {
 
@@ -70,8 +70,11 @@ public class Base32 extends BaseNCodec {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 10-1f
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 20-2f
             -1, -1, 26, 27, 28, 29, 30, 31, -1, -1, -1, -1, -1, -1, -1, -1, // 30-3f 2-7
-            -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, // 40-4f A-N
-            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,                     // 50-5a O-Z
+            -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, // 40-4f A-O
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,                     // 50-5a P-Z
+                                                        -1, -1, -1, -1, -1, // 5b - 5f
+            -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, // 60 - 6f a-o
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,                     // 70 - 7a p-z/**/
     };
 
     /**
@@ -85,8 +88,8 @@ public class Base32 extends BaseNCodec {
     };
 
     /**
-     * This array is a lookup table that translates Unicode characters drawn from the "Base32 |Hex Alphabet" (as
-     * specified in Table 3 of RFC 4648) into their 5-bit positive integer equivalents. Characters that are not in the
+     * This array is a lookup table that translates Unicode characters drawn from the "Base32 Hex Alphabet" (as
+     * specified in Table 4 of RFC 4648) into their 5-bit positive integer equivalents. Characters that are not in the
      * Base32 Hex alphabet but fall within the bounds of the array are translated to -1.
      */
     private static final byte[] HEX_DECODE_TABLE = {
@@ -95,13 +98,16 @@ public class Base32 extends BaseNCodec {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 10-1f
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 20-2f
              0,  1,  2,  3,  4,  5,  6,  7,  8,  9, -1, -1, -1, -1, -1, -1, // 30-3f 2-7
-            -1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, // 40-4f A-N
-            25, 26, 27, 28, 29, 30, 31, 32,                                 // 50-57 O-V
+            -1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, // 40-4f A-O
+            25, 26, 27, 28, 29, 30, 31,                                     // 50-56 P-V
+                                        -1, -1, -1, -1, -1, -1, -1, -1, -1, // 57-5f Z-_
+            -1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, // 60-6f `-o
+            25, 26, 27, 28, 29, 30, 31                                      // 70-76 p-v
     };
 
     /**
      * This array is a lookup table that translates 5-bit positive integer index values into their
-     * "Base32 Hex Alphabet" equivalents as specified in Table 3 of RFC 4648.
+     * "Base32 Hex Alphabet" equivalents as specified in Table 4 of RFC 4648.
      */
     private static final byte[] HEX_ENCODE_TABLE = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -348,21 +354,20 @@ public class Base32 extends BaseNCodec {
                 // We're done.
                 context.eof = true;
                 break;
-            } else {
-                final byte[] buffer = ensureBufferSize(decodeSize, context);
-                if (b >= 0 && b < this.decodeTable.length) {
-                    final int result = this.decodeTable[b];
-                    if (result >= 0) {
-                        context.modulus = (context.modulus+1) % BYTES_PER_ENCODED_BLOCK;
-                        // collect decoded bytes
-                        context.lbitWorkArea = (context.lbitWorkArea << BITS_PER_ENCODED_BYTE) + result;
-                        if (context.modulus == 0) { // we can output the 5 bytes
-                            buffer[context.pos++] = (byte) ((context.lbitWorkArea >> 32) & MASK_8BITS);
-                            buffer[context.pos++] = (byte) ((context.lbitWorkArea >> 24) & MASK_8BITS);
-                            buffer[context.pos++] = (byte) ((context.lbitWorkArea >> 16) & MASK_8BITS);
-                            buffer[context.pos++] = (byte) ((context.lbitWorkArea >> 8) & MASK_8BITS);
-                            buffer[context.pos++] = (byte) (context.lbitWorkArea & MASK_8BITS);
-                        }
+            }
+            final byte[] buffer = ensureBufferSize(decodeSize, context);
+            if (b >= 0 && b < this.decodeTable.length) {
+                final int result = this.decodeTable[b];
+                if (result >= 0) {
+                    context.modulus = (context.modulus+1) % BYTES_PER_ENCODED_BLOCK;
+                    // collect decoded bytes
+                    context.lbitWorkArea = (context.lbitWorkArea << BITS_PER_ENCODED_BYTE) + result;
+                    if (context.modulus == 0) { // we can output the 5 bytes
+                        buffer[context.pos++] = (byte) ((context.lbitWorkArea >> 32) & MASK_8BITS);
+                        buffer[context.pos++] = (byte) ((context.lbitWorkArea >> 24) & MASK_8BITS);
+                        buffer[context.pos++] = (byte) ((context.lbitWorkArea >> 16) & MASK_8BITS);
+                        buffer[context.pos++] = (byte) ((context.lbitWorkArea >> 8) & MASK_8BITS);
+                        buffer[context.pos++] = (byte) (context.lbitWorkArea & MASK_8BITS);
                     }
                 }
             }

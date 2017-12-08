@@ -11,7 +11,7 @@ gwt-commons-codec requires gwt >= 2.7.0, older versions are not supported!
     <dependency>
       <groupId>de.knightsoft-net</groupId>
       <artifactId>gwt-commons-codec</artifactId>
-      <version>1.10-4</version>
+      <version>1.11-0</version>
     </dependency>
 ```
 

@@ -18,6 +18,7 @@
 package org.apache.commons.codec.binary;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import org.apache.commons.codec.CharEncoding;
@@ -34,7 +35,7 @@ import com.google.gwt.core.shared.GwtIncompatible;
  *
  * @see CharEncoding
  * @see <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
- * @version $Id: StringUtils.java 1634456 2014-10-27 05:26:56Z ggregory $
+ * @version $Id: StringUtils.java 1789539 2017-03-30 16:36:28Z sebb $
  * @since 1.4
  */
 public class StringUtils {
@@ -79,7 +80,7 @@ public class StringUtils {
         if (cs1 instanceof String && cs2 instanceof String) {
             return cs1.equals(cs2);
         }
-        return CharSequenceUtils.regionMatches(cs1, false, 0, cs2, 0, Math.max(cs1.length(), cs2.length()));
+        return cs1.length() == cs2.length() && CharSequenceUtils.regionMatches(cs1, false, 0, cs2, 0, cs1.length());
     }
 
     /**
@@ -97,6 +98,42 @@ public class StringUtils {
             return null;
         }
         return string.getBytes(charset);
+    }
+
+    /**
+     * Calls {@link String#getBytes(Charset)}
+     *
+     * @param string
+     *            The string to encode (if null, return null).
+     * @param charset
+     *            The {@link Charset} to encode the <code>String</code>
+     * @return the encoded bytes
+     */
+    @GwtIncompatible("incompatible method")
+    private static ByteBuffer getByteBuffer(final String string, final Charset charset) {
+        if (string == null) {
+            return null;
+        }
+        return ByteBuffer.wrap(string.getBytes(charset));
+    }
+
+    /**
+     * Encodes the given string into a byte buffer using the UTF-8 charset, storing the result into a new byte
+     * array.
+     *
+     * @param string
+     *            the String to encode, may be <code>null</code>
+     * @return encoded bytes, or <code>null</code> if the input string was <code>null</code>
+     * @throws NullPointerException
+     *             Thrown if {@link Charsets#UTF_8} is not initialized, which should never happen since it is
+     *             required by the Java platform specification.
+     * @see <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
+     * @see #getBytesUnchecked(String, String)
+     * @since 1.11
+     */
+    @GwtIncompatible("incompatible method")
+    public static ByteBuffer getByteBufferUtf8(final String string) {
+        return getByteBuffer(string, Charsets.UTF_8);
     }
 
     /**
@@ -249,12 +286,11 @@ public class StringUtils {
      * @param bytes
      *            The bytes to be decoded into characters
      * @param charset
-     *            The {@link Charset} to encode the <code>String</code>
+     *            The {@link Charset} to encode the <code>String</code>; not {@code null}
      * @return A new <code>String</code> decoded from the specified array of bytes using the given charset,
      *         or <code>null</code> if the input byte array was <code>null</code>.
      * @throws NullPointerException
-     *             Thrown if {@link Charsets#UTF_8} is not initialized, which should never happen since it is
-     *             required by the Java platform specification.
+     *             Thrown if charset is {@code null}
      */
     @GwtIncompatible("incompatible method")
     private static String newString(final byte[] bytes, final Charset charset) {

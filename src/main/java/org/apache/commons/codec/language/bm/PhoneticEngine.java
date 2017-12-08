@@ -48,7 +48,7 @@ import org.apache.commons.codec.language.bm.Rule.Phoneme;
  * Ported from phoneticengine.php
  *
  * @since 1.6
- * @version $Id: PhoneticEngine.java 1634418 2014-10-27 00:43:25Z ggregory $
+ * @version $Id: PhoneticEngine.java 1694610 2015-08-07 03:47:38Z ggregory $
  */
 public class PhoneticEngine {
 
@@ -171,7 +171,7 @@ public class PhoneticEngine {
         private final Map<String, List<Rule>> finalRules;
         private final CharSequence input;
 
-        private PhonemeBuilder phonemeBuilder;
+        private final PhonemeBuilder phonemeBuilder;
         private int i;
         private final int maxPhonemes;
         private boolean found;

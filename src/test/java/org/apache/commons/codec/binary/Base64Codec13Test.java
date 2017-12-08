@@ -504,6 +504,7 @@ public class Base64Codec13Test {
         }
     }
 
+
     private static byte[] utf8(final String s) {
 
         // We would use commons-codec-1.4.jar own utility method for this, but we

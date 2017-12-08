@@ -24,10 +24,15 @@ import org.apache.commons.codec.DecoderException;
  *
  * <p>This class is immutable and thread-safe.</p>
  *
- * @version $Id: Utils.java 1458495 2013-03-19 20:19:13Z sebb $
+ * @version $Id: Utils.java 1811344 2017-10-06 15:19:57Z ggregory $
  * @since 1.4
  */
 class Utils {
+
+    /**
+     * Radix used in encoding and decoding.
+     */
+    private static final int RADIX = 16;
 
     /**
      * Returns the numeric value of the character <code>b</code> in radix 16.
@@ -40,11 +45,21 @@ class Utils {
      *             Thrown when the byte is not valid per {@link Character#digit(char,int)}
      */
     static int digit16(final byte b) throws DecoderException {
-        final int i = Character.digit((char) b, URLCodec.RADIX);
+        final int i = Character.digit((char) b, RADIX);
         if (i == -1) {
-            throw new DecoderException("Invalid URL encoding: not a valid digit (radix " + URLCodec.RADIX + "): " + b);
+            throw new DecoderException("Invalid URL encoding: not a valid digit (radix " + RADIX + "): " + b);
         }
         return i;
+    }
+
+    /**
+     * Returns the upper case hex digit of the lower 4 bits of the int.
+     *
+     * @param b the input int
+     * @return the upper case hex digit of the lower 4 bits of the int.
+     */
+    static char hexDigit(final int b) {
+        return Character.toUpperCase(Character.forDigit(b & 0xF, RADIX));
     }
 
 }

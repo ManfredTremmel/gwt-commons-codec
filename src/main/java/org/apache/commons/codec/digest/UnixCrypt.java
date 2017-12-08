@@ -18,7 +18,6 @@ package org.apache.commons.codec.digest;
 
 import java.util.Random;
 
-import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.StringUtils;
 
 /**

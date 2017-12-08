@@ -25,18 +25,28 @@ import java.security.MessageDigest;
  * <p>
  * This class is immutable and thread-safe.
  * </p>
- * TODO This should be an enum.
+ * <p>
+ * Java 8 and up: SHA-224.
+ * </p>
+ * <p>
+ * Java 9 and up: SHA3-224, SHA3-256, SHA3-384, SHA3-512.
+ * </p>
  *
- * @see <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html">Java Cryptography
- *      Architecture Standard Algorithm Name Documentation</a>
+ * @see <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html#MessageDigest">
+ *      Java 6 Cryptography Architecture Standard Algorithm Name Documentation</a>
+ * @see <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#MessageDigest">
+ *      Java 7 Cryptography Architecture Standard Algorithm Name Documentation</a>
+ * @see <a href="http://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#MessageDigest">
+ *      Java 8 Cryptography Architecture Standard Algorithm Name Documentation</a>
+ * @see <a href="http://download.java.net/java/jdk9/docs/technotes/guides/security/StandardNames.html#MessageDigest">
+ *      Java 9 Cryptography Architecture Standard Algorithm Name Documentation</a>
+ *
+ * @see <a href="http://dx.doi.org/10.6028/NIST.FIPS.180-4">FIPS PUB 180-4</a>
+ * @see <a href="http://dx.doi.org/10.6028/NIST.FIPS.202">FIPS PUB 202</a>
  * @since 1.7
- * @version $Id: MessageDigestAlgorithms.java 1585867 2014-04-09 00:12:36Z ggregory $
+ * @version $Id: MessageDigestAlgorithms.java 1744728 2016-05-20 12:55:58Z sebb $
  */
 public class MessageDigestAlgorithms {
-
-    private MessageDigestAlgorithms() {
-        // cannot be instantiated.
-    }
 
     /**
      * The MD2 message digest algorithm defined in RFC 1319.
@@ -54,6 +64,16 @@ public class MessageDigestAlgorithms {
     public static final String SHA_1 = "SHA-1";
 
     /**
+     * The SHA-224 hash algorithm defined in the FIPS PUB 180-3.
+     * <p>
+     * Present in Oracle Java 8.
+     * </p>
+     *
+     * @since 1.11
+     */
+    public static final String SHA_224 = "SHA-224";
+
+    /**
      * The SHA-256 hash algorithm defined in the FIPS PUB 180-2.
      */
     public static final String SHA_256 = "SHA-256";
@@ -67,5 +87,62 @@ public class MessageDigestAlgorithms {
      * The SHA-512 hash algorithm defined in the FIPS PUB 180-2.
      */
     public static final String SHA_512 = "SHA-512";
+
+    /**
+     * The SHA3-224 hash algorithm defined in the FIPS PUB 202.
+     * <p>
+     * Likely to be included in Oracle Java 9 GA.
+     * </p>
+     *
+     * @since 1.11
+     */
+    public static final String SHA3_224 = "SHA3-224";
+
+    /**
+     * The SHA3-256 hash algorithm defined in the FIPS PUB 202.
+     * <p>
+     * Likely to be included in Oracle Java 9 GA.
+     * </p>
+     *
+     * @since 1.11
+     */
+    public static final String SHA3_256 = "SHA3-256";
+
+    /**
+     * The SHA3-384 hash algorithm defined in the FIPS PUB 202.
+     * <p>
+     * Likely to be included in Oracle Java 9 GA.
+     * </p>
+     *
+     * @since 1.11
+     */
+    public static final String SHA3_384 = "SHA3-384";
+
+    /**
+     * The SHA3-512 hash algorithm defined in the FIPS PUB 202.
+     * <p>
+     * Likely to be included in Oracle Java 9 GA.
+     * </p>
+     *
+     * @since 1.11
+     */
+    public static final String SHA3_512 = "SHA3-512";
+
+    /**
+     * Gets all constant values defined in this class.
+     *
+     * @return all constant values defined in this class.
+     * @since 1.11
+     */
+    public static String[] values() {
+        // N.B. do not use a constant array here as that can be changed externally by accident or design
+        return new String[] {
+            MD2, MD5, SHA_1, SHA_224, SHA_256, SHA_384, SHA_512, SHA3_224, SHA3_256, SHA3_384, SHA3_512
+        };
+    }
+
+    private MessageDigestAlgorithms() {
+        // cannot be instantiated.
+    }
 
 }

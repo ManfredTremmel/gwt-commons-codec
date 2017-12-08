@@ -51,7 +51,7 @@ import com.google.gwt.core.shared.GwtIncompatible;
  * This class is immutable and thread-safe.
  *
  * @since 1.6
- * @version $Id: Languages.java 1636435 2014-11-03 20:37:24Z tn $
+ * @version $Id: Languages.java 1694610 2015-08-07 03:47:38Z ggregory $
  */
 public class Languages {
     // Implementation note: This class is divided into two sections. The first part is a static factory interface that
@@ -123,7 +123,7 @@ public class Languages {
             } else {
                 final SomeLanguages sl = (SomeLanguages) other;
                 final Set<String> ls = new HashSet<String>(Math.min(languages.size(), sl.languages.size()));
-                for (String lang : languages) {
+                for (final String lang : languages) {
                     if (sl.languages.contains(lang)) {
                         ls.add(lang);
                     }
@@ -141,7 +141,7 @@ public class Languages {
             } else {
                 final SomeLanguages sl = (SomeLanguages) other;
                 final Set<String> ls = new HashSet<String>(languages);
-                for (String lang : sl.languages) {
+                for (final String lang : sl.languages) {
                   ls.add(lang);
                 }
                 return from(ls);

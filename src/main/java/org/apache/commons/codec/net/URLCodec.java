@@ -37,58 +37,63 @@ import org.apache.commons.codec.binary.StringUtils;
  * {@link java.net.URLDecoder} on older Java platforms, as these classes in Java versions below
  * 1.4 rely on the platform's default charset encoding.
  * <p>
- * This class is immutable and thread-safe.
+ * This class is thread-safe since 1.11
  *
  * @see <a href="http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.1">Chapter 17.13.4 Form content types</a>
  *           of the <a href="http://www.w3.org/TR/html4/">HTML 4.01 Specification</a>
  *
  * @since 1.2
- * @version $Id: URLCodec.java 1563226 2014-01-31 19:38:06Z ggregory $
+ * @version $Id: URLCodec.java 1789142 2017-03-28 13:58:58Z sebb $
  */
 public class URLCodec implements BinaryEncoder, BinaryDecoder, StringEncoder, StringDecoder {
 
     /**
-     * Radix used in encoding and decoding.
-     */
-    static final int RADIX = 16;
-
-    /**
      * The default charset used for string decoding and encoding.
      *
-     * @deprecated TODO: This field will be changed to a private final Charset in 2.0.
+     * @deprecated TODO: This field will be changed to a private final Charset in 2.0. (CODEC-126)
      */
     @Deprecated
-    protected String charset;
+    protected volatile String charset; // added volatile: see CODEC-232
 
     /**
      * Release 1.5 made this field final.
      */
     protected static final byte ESCAPE_CHAR = '%';
+
     /**
      * BitSet of www-form-url safe characters.
+     * This is a copy of the internal BitSet which is now used for the conversion.
+     * Changes to this field are ignored.
+     * @deprecated 1.11 Will be removed in 2.0 (CODEC-230)
      */
-    protected static final BitSet WWW_FORM_URL = new BitSet(256);
+    @Deprecated
+    protected static final BitSet WWW_FORM_URL;
+
+    private static final BitSet WWW_FORM_URL_SAFE = new BitSet(256);
 
     // Static initializer for www_form_url
     static {
         // alpha characters
         for (int i = 'a'; i <= 'z'; i++) {
-            WWW_FORM_URL.set(i);
+            WWW_FORM_URL_SAFE.set(i);
         }
         for (int i = 'A'; i <= 'Z'; i++) {
-            WWW_FORM_URL.set(i);
+            WWW_FORM_URL_SAFE.set(i);
         }
         // numeric characters
         for (int i = '0'; i <= '9'; i++) {
-            WWW_FORM_URL.set(i);
+            WWW_FORM_URL_SAFE.set(i);
         }
         // special chars
-        WWW_FORM_URL.set('-');
-        WWW_FORM_URL.set('_');
-        WWW_FORM_URL.set('.');
-        WWW_FORM_URL.set('*');
+        WWW_FORM_URL_SAFE.set('-');
+        WWW_FORM_URL_SAFE.set('_');
+        WWW_FORM_URL_SAFE.set('.');
+        WWW_FORM_URL_SAFE.set('*');
         // blank to be replaced with +
-        WWW_FORM_URL.set(' ');
+        WWW_FORM_URL_SAFE.set(' ');
+
+        // Create a copy in case anyone (ab)uses it
+        WWW_FORM_URL = (BitSet) WWW_FORM_URL_SAFE.clone();
     }
 
 
@@ -123,7 +128,7 @@ public class URLCodec implements BinaryEncoder, BinaryDecoder, StringEncoder, St
             return null;
         }
         if (urlsafe == null) {
-            urlsafe = WWW_FORM_URL;
+            urlsafe = WWW_FORM_URL_SAFE;
         }
 
         final byte[] buffer = new byte[bytes.length * 3];
@@ -139,9 +144,9 @@ public class URLCodec implements BinaryEncoder, BinaryDecoder, StringEncoder, St
                 }
                 buffer[bufPos++] = (byte) b;
             } else {
-            	buffer[bufPos++] = (byte) ESCAPE_CHAR;
-                final char hex1 = Character.toUpperCase(Character.forDigit((b >> 4) & 0xF, RADIX));
-                final char hex2 = Character.toUpperCase(Character.forDigit(b & 0xF, RADIX));
+                buffer[bufPos++] = (byte) ESCAPE_CHAR;
+                final char hex1 = Utils.hexDigit(b >> 4);
+                final char hex2 = Utils.hexDigit(b);
                 buffer[bufPos++] = (byte) hex1;
                 buffer[bufPos++] = (byte) hex2;
             }
@@ -193,7 +198,7 @@ public class URLCodec implements BinaryEncoder, BinaryDecoder, StringEncoder, St
      */
     @Override
     public byte[] encode(final byte[] bytes) {
-        return encodeUrl(WWW_FORM_URL, bytes);
+        return encodeUrl(WWW_FORM_URL_SAFE, bytes);
     }
 
 

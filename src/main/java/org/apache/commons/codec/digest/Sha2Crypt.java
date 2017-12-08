@@ -36,7 +36,7 @@ import com.google.gwt.regexp.shared.RegExp;
  * <p>
  * This class is immutable and thread-safe.
  *
- * @version $Id: Sha2Crypt.java 1619948 2014-08-22 22:53:55Z ggregory $
+ * @version $Id: Sha2Crypt.java 1744746 2016-05-20 14:19:43Z sebb $
  * @since 1.7
  */
 public class Sha2Crypt {

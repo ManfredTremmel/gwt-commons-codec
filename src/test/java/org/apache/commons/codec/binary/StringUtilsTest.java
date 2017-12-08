@@ -26,7 +26,7 @@ import org.junit.Test;
 /**
  * Tests {@link StringUtils}
  *
- * @version $Id: StringUtilsTest.java 1571906 2014-02-26 04:09:25Z ggregory $
+ * @version $Id: StringUtilsTest.java 1788777 2017-03-26 21:43:36Z sebb $
  */
 public class StringUtilsTest {
 
@@ -146,6 +146,16 @@ public class StringUtilsTest {
     }
 
     @Test
+    public void testNewStringNullInput_CODEC229() {
+        Assert.assertNull(StringUtils.newStringUtf8(null));
+        Assert.assertNull(StringUtils.newStringIso8859_1(null));
+        Assert.assertNull(StringUtils.newStringUsAscii(null));
+        Assert.assertNull(StringUtils.newStringUtf16(null));
+        Assert.assertNull(StringUtils.newStringUtf16Be(null));
+        Assert.assertNull(StringUtils.newStringUtf16Le(null));
+    }
+
+    @Test
     public void testNewStringIso8859_1() throws UnsupportedEncodingException {
         final String charsetName = "ISO-8859-1";
         testNewString(charsetName);
@@ -197,5 +207,34 @@ public class StringUtilsTest {
         final String expected = new String(BYTES_FIXTURE, charsetName);
         final String actual = StringUtils.newStringUtf8(BYTES_FIXTURE);
         Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testEqualsString() {
+        Assert.assertTrue(StringUtils.equals(null, null));
+        Assert.assertFalse(StringUtils.equals("abc", null));
+        Assert.assertFalse(StringUtils.equals(null, "abc"));
+        Assert.assertTrue(StringUtils.equals("abc", "abc"));
+        Assert.assertFalse(StringUtils.equals("abc", "abcd"));
+        Assert.assertFalse(StringUtils.equals("abcd", "abc"));
+        Assert.assertFalse(StringUtils.equals("abc", "ABC"));
+    }
+
+    @Test
+    public void testEqualsCS1() {
+        Assert.assertFalse(StringUtils.equals(new StringBuilder("abc"), null));
+        Assert.assertFalse(StringUtils.equals(null, new StringBuilder("abc")));
+        Assert.assertTrue(StringUtils.equals(new StringBuilder("abc"), new StringBuilder("abc")));
+        Assert.assertFalse(StringUtils.equals(new StringBuilder("abc"), new StringBuilder("abcd")));
+        Assert.assertFalse(StringUtils.equals(new StringBuilder("abcd"), new StringBuilder("abc")));
+        Assert.assertFalse(StringUtils.equals(new StringBuilder("abc"), new StringBuilder("ABC")));
+    }
+
+    @Test
+    public void testEqualsCS2() {
+        Assert.assertTrue(StringUtils.equals("abc", new StringBuilder("abc")));
+        Assert.assertFalse(StringUtils.equals(new StringBuilder("abc"), "abcd"));
+        Assert.assertFalse(StringUtils.equals("abcd", new StringBuilder("abc")));
+        Assert.assertFalse(StringUtils.equals(new StringBuilder("abc"), "ABC"));
     }
 }

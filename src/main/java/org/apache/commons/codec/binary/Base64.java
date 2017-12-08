@@ -49,7 +49,7 @@ import java.math.BigInteger;
  *
  * @see <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>
  * @since 1.0
- * @version $Id: Base64.java 1635986 2014-11-01 16:27:52Z tn $
+ * @version $Id: Base64.java 1789158 2017-03-28 15:04:58Z sebb $
  */
 public class Base64 extends BaseNCodec {
 
@@ -113,13 +113,15 @@ public class Base64 extends BaseNCodec {
      * http://svn.apache.org/repos/asf/webservices/commons/trunk/modules/util/
      */
     private static final byte[] DECODE_TABLE = {
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, 62, -1, 63, 52, 53, 54,
-            55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4,
-            5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-            24, 25, -1, -1, -1, -1, 63, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34,
-            35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
+        //   0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 00-0f
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 10-1f
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, 62, -1, 63, // 20-2f + - /
+            52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, // 30-3f 0-9
+            -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, // 40-4f A-O
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, 63, // 50-5f P-Z _
+            -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, // 60-6f a-o
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51                      // 70-7a p-z
     };
 
     /**
@@ -439,17 +441,16 @@ public class Base64 extends BaseNCodec {
                 // We're done.
                 context.eof = true;
                 break;
-            } else {
-                if (b >= 0 && b < DECODE_TABLE.length) {
-                    final int result = DECODE_TABLE[b];
-                    if (result >= 0) {
-                        context.modulus = (context.modulus+1) % BYTES_PER_ENCODED_BLOCK;
-                        context.ibitWorkArea = (context.ibitWorkArea << BITS_PER_ENCODED_BYTE) + result;
-                        if (context.modulus == 0) {
-                            buffer[context.pos++] = (byte) ((context.ibitWorkArea >> 16) & MASK_8BITS);
-                            buffer[context.pos++] = (byte) ((context.ibitWorkArea >> 8) & MASK_8BITS);
-                            buffer[context.pos++] = (byte) (context.ibitWorkArea & MASK_8BITS);
-                        }
+            }
+            if (b >= 0 && b < DECODE_TABLE.length) {
+                final int result = DECODE_TABLE[b];
+                if (result >= 0) {
+                    context.modulus = (context.modulus+1) % BYTES_PER_ENCODED_BLOCK;
+                    context.ibitWorkArea = (context.ibitWorkArea << BITS_PER_ENCODED_BYTE) + result;
+                    if (context.modulus == 0) {
+                        buffer[context.pos++] = (byte) ((context.ibitWorkArea >> 16) & MASK_8BITS);
+                        buffer[context.pos++] = (byte) ((context.ibitWorkArea >> 8) & MASK_8BITS);
+                        buffer[context.pos++] = (byte) (context.ibitWorkArea & MASK_8BITS);
                     }
                 }
             }
@@ -566,7 +567,7 @@ public class Base64 extends BaseNCodec {
      * @since 1.4 (NOTE:  1.4 chunked the output, whereas 1.5 does not).
      */
     public static String encodeBase64String(final byte[] binaryData) {
-        return StringUtils.newStringUtf8(encodeBase64(binaryData, false));
+        return StringUtils.newStringUsAscii(encodeBase64(binaryData, false));
     }
 
     /**
@@ -592,7 +593,7 @@ public class Base64 extends BaseNCodec {
      * @since 1.4
      */
     public static String encodeBase64URLSafeString(final byte[] binaryData) {
-        return StringUtils.newStringUtf8(encodeBase64(binaryData, false, true));
+        return StringUtils.newStringUsAscii(encodeBase64(binaryData, false, true));
     }
 
     /**

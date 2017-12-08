@@ -63,7 +63,7 @@ import org.apache.commons.codec.StringEncoder;
  * @see <a href="http://www.dropby.com/NYSIIS.html">NYSIIS on dropby.com</a>
  * @see Soundex
  * @since 1.7
- * @version $Id: Nysiis.java 1619948 2014-08-22 22:53:55Z ggregory $
+ * @version $Id: Nysiis.java 1725161 2016-01-18 01:08:56Z ggregory $
  */
 public class Nysiis implements StringEncoder {
 
@@ -137,9 +137,8 @@ public class Nysiis implements StringEncoder {
         if (curr == 'K') {
             if (next == 'N') {
                 return CHARS_NN;
-            } else {
-                return CHARS_C;
             }
+            return CHARS_C;
         }
 
         // 4. SCH -> SSS

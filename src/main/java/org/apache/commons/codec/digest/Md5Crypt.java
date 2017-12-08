@@ -22,7 +22,6 @@ import java.util.Arrays;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
-import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.StringUtils;
 
 /**
@@ -44,7 +43,7 @@ import org.apache.commons.codec.binary.StringUtils;
  * <p>
  * This class is immutable and thread-safe.
  *
- * @version $Id: Md5Crypt.java 1563226 2014-01-31 19:38:06Z ggregory $
+ * @version $Id: Md5Crypt.java 1744746 2016-05-20 14:19:43Z sebb $
  * @since 1.7
  */
 public class Md5Crypt {
@@ -186,8 +185,8 @@ public class Md5Crypt {
         if (salt == null) {
             saltString = B64.getRandomSalt(8);
         } else {
-        	final RegExp p = RegExp.compile("^" + prefix.replace("$", "\\$") + "([\\.\\/a-zA-Z0-9]{1,8}).*");
-        	final MatchResult m = p.exec(salt);
+            final RegExp p = RegExp.compile("^" + prefix.replace("$", "\\$") + "([\\.\\/a-zA-Z0-9]{1,8}).*");
+            final MatchResult m = p.exec(salt);
             if (m == null) {
                 throw new IllegalArgumentException("Invalid salt value: " + salt);
             }
