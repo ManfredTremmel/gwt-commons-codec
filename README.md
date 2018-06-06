@@ -1,3 +1,5 @@
+# This project is read only and was moved to gitlab: [https://gitlab.com/ManfredTremmel/gwt-commons-codec](https://gitlab.com/ManfredTremmel/gwt-commons-codec)
+
 gwt-commons-codec
 =================
 
